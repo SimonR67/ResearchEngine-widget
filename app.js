@@ -72,7 +72,7 @@
 
   async function loadAll() {
     setStatus("Loading...");
-    var w = await db.from("watchlist").select("entity_id,status,origin,rationale,discovery_score,notes,proposed_at,status_changed_at,entities(name,domain,country,segment,ftse_index,ticker)").order("discovery_score", { ascending: false, nullsFirst: false });
+    var w = await db.from("watchlist").select("entity_id,status,origin,rationale,discovery_score,score_components,notes,proposed_at,status_changed_at,entities(name,domain,country,segment,ftse_index,ticker)").order("discovery_score", { ascending: false, nullsFirst: false });
     if (w.error) { setStatus("Could not load the watchlist: " + w.error.message, true); return; }
     state.rows = w.data || [];
     var since = new Date(Date.now() - 40 * 864e5).toISOString().slice(0, 10);
@@ -124,10 +124,18 @@
           e.ticker ? pill(e.ticker) : null, e.domain ? pill(e.domain) : null, r.origin === "manual" ? pill("manual") : null
         ])
       ]),
-      r.discovery_score != null ? el("div", { class: "score", title: "Fit score out of 100", text: String(Math.round(Number(r.discovery_score))) }) : null
+      r.discovery_score != null ? el("div", { class: "score", title: "Outreach-worth score out of 100 (fixed rubric)", text: String(Math.round(Number(r.discovery_score))) }) : null
     ]);
     var c = el("div", { class: "card" }, [head]);
     if (r.rationale) c.appendChild(el("div", { class: "meta", text: r.rationale }));
+    var sc = r.score_components;
+    if (sc && sc.status === "scored") {
+      var tr = sc.trigger || {};
+      var line = "Tier " + sc.tier + " (rubric " + sc.rubric_version + "): fit " + sc.fit.points + "/40, trigger " + sc.trigger.points + "/30, reach " + sc.reach.points + "/15, timing " + sc.timing.points + "/15";
+      if (tr.type) line += ". Best trigger: " + String(tr.type).replace(/_/g, " ") + (tr.date ? " on " + tr.date : "");
+      if (sc.missing && sc.missing.length) line += ". Not found: " + sc.missing.join(", ");
+      c.appendChild(el("div", { class: "meta", title: "Fixed rubric, recalculated daily from saved facts and signals", text: line }));
+    }
     if (r.notes) c.appendChild(el("div", { text: "Notes: " + r.notes }));
 
     if (status === "tracked") {
