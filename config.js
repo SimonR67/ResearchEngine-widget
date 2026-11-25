@@ -2,7 +2,7 @@
 // (row level security) allow nothing unless you are signed in as the owner.
 // NEVER put the service_role key here.
 window.RE_CONFIG = {
-  supabaseUrl: "PASTE_SUPABASE_PROJECT_URL",
-  supabaseAnonKey: "PASTE_SUPABASE_ANON_PUBLIC_KEY",
+  supabaseUrl: "https://oixbkclczqzgqltkmive.supabase.co",
+  supabaseAnonKey: "sb_publishable_gxuZxsi2dRpKmij1-Vb1wg_Ulw57rmt",
   ownerEmail: "simon.r@softpapaya.com"
 };
