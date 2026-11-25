@@ -106,9 +106,12 @@
     return Object.keys(m).map(function (k) {
       var a = m[k], last = a[a.length - 1], weekAgo = null, cutoff = new Date(Date.now() - 7 * 864e5).toISOString().slice(0, 10);
       a.forEach(function (p) { if (p.snapshot_date <= cutoff) weekAgo = p; });
-      var change = weekAgo && Number(weekAgo.value) ? ((Number(last.value) - Number(weekAgo.value)) / Math.abs(Number(weekAgo.value))) * 100 : null;
-      return { metric: k, value: last.value, unit: last.unit, change: change };
-    });
+      var isPct = /_pct$/.test(k);
+      var change = !isPct && weekAgo && Number(weekAgo.value) ? ((Number(last.value) - Number(weekAgo.value)) / Math.abs(Number(weekAgo.value))) * 100 : null;
+      var labels = { close: "Share price (latest close)", change_1d_pct: "1-day change", change_30d_pct: "30-day change" };
+      var order = { close: 0, change_1d_pct: 1, change_30d_pct: 2 };
+      return { metric: labels[k] || k, sort: order[k] != null ? order[k] : 9, value: last.value, unit: last.unit, change: change, asOf: last.snapshot_date };
+    }).sort(function (a, b) { return a.sort - b.sort; });
   }
 
   function card(r, status) {
