@@ -108,8 +108,8 @@
       a.forEach(function (p) { if (p.snapshot_date <= cutoff) weekAgo = p; });
       var isPct = /_pct$/.test(k);
       var change = !isPct && weekAgo && Number(weekAgo.value) ? ((Number(last.value) - Number(weekAgo.value)) / Math.abs(Number(weekAgo.value))) * 100 : null;
-      var labels = { close: "Share price (latest close)", change_1d_pct: "1-day change", change_30d_pct: "30-day change" };
-      var order = { close: 0, change_1d_pct: 1, change_30d_pct: 2 };
+      var labels = { close: "Share price (latest close)", change_1d_pct: "1-day change", change_30d_pct: "30-day change", open_roles_total: "Open roles (all)", open_roles_tech_sampled: "Open tech roles (newest 100)", new_roles_30d: "New roles, last 30 days", new_tech_roles_30d: "New tech roles, last 30 days" };
+      var order = { close: 0, change_1d_pct: 1, change_30d_pct: 2, open_roles_total: 3, open_roles_tech_sampled: 4, new_roles_30d: 5, new_tech_roles_30d: 6 };
       return { metric: labels[k] || k, sort: order[k] != null ? order[k] : 9, value: last.value, unit: last.unit, change: change, asOf: last.snapshot_date };
     }).sort(function (a, b) { return a.sort - b.sort; });
   }
