@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src https://*.supabase.co; img-src 'self' data:; frame-src about:; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<title>Research Engine</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">Research Engine <span class="sub">SoftPapaya market and target tracker</span></div>
+  <div id="userbox" hidden>
+    <span id="useremail"></span>
+    <button id="signout" class="ghost">Sign out</button>
+  </div>
+</header>
+
+<main>
+  <section id="login" hidden>
+    <h1>Sign in</h1>
+    <p>Access is limited to one authorised Google account.</p>
+    <button id="signin" class="primary">Sign in with Google</button>
+    <p id="loginmsg" class="msg"></p>
+  </section>
+
+  <section id="app" hidden>
+    <nav class="tabs" id="tabs">
+      <button data-tab="candidates" class="on">Candidates <span class="count" id="n-proposed"></span></button>
+      <button data-tab="tracked">Tracked <span class="count" id="n-tracked"></span></button>
+      <button data-tab="market">Market</button>
+      <button data-tab="digests">Digests</button>
+      <button data-tab="dropped">Dropped <span class="count" id="n-dropped"></span></button>
+    </nav>
+    <p id="status" class="msg" role="status"></p>
+
+    <div id="tab-candidates" class="tab"></div>
+    <div id="tab-tracked" class="tab" hidden></div>
+    <div id="tab-market" class="tab" hidden></div>
+    <div id="tab-digests" class="tab" hidden></div>
+    <div id="tab-dropped" class="tab" hidden></div>
+
+    <details class="add">
+      <summary>Add a company manually</summary>
+      <form id="addform">
+        <label>Company name <input name="name" required maxlength="200"></label>
+        <label>Website domain <input name="domain" placeholder="example.com" maxlength="200"></label>
+        <label>Country
+          <select name="country"><option value="UK">UK</option><option value="US">US</option></select>
+        </label>
+        <label>Segment
+          <select name="segment"><option value="mid_market">Mid-market</option><option value="ftse">FTSE</option><option value="tech">Tech</option></select>
+        </label>
+        <button class="primary" type="submit">Add to tracked</button>
+      </form>
+    </details>
+  </section>
+</main>
+
+<footer>Information only, not investment advice. Research is AI-generated from public sources; verify before any outreach.</footer>
+
+<script src="vendor/supabase.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
