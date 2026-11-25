@@ -234,15 +234,20 @@
 
   async function renderDigests() {
     var box = $("tab-digests"); box.textContent = "";
-    var r = await db.from("digests").select("kind,digest_date,subject,html").order("digest_date", { ascending: false }).limit(1);
+    var r = await db.from("digests").select("kind,digest_date,subject,html").order("digest_date", { ascending: false }).limit(20);
     if (r.error) { box.appendChild(el("div", { class: "msg err", text: r.error.message })); return; }
     if (!r.data.length) { box.appendChild(el("div", { class: "empty", text: "No digests yet. The 07:30 digest has not been connected." })); return; }
-    var d = r.data[0];
-    box.appendChild(el("div", { class: "meta", text: d.kind + " digest, " + d.digest_date + (d.subject ? " | " + d.subject : "") }));
-    // Sandboxed with no permissions: scripts and navigation in the digest HTML cannot run.
-    var f = el("iframe", { sandbox: "", title: "Digest" });
-    f.srcdoc = d.html || "";
-    box.appendChild(f);
+    // Newest of each kind (daily morning digest and weekly discovery).
+    var seen = {};
+    r.data.forEach(function (d) {
+      if (seen[d.kind]) return;
+      seen[d.kind] = true;
+      box.appendChild(el("div", { class: "meta", text: d.kind + " digest, " + d.digest_date + (d.subject ? " | " + d.subject : "") }));
+      // Sandboxed with no permissions: scripts and navigation in the digest HTML cannot run.
+      var f = el("iframe", { sandbox: "", title: d.kind + " digest" });
+      f.srcdoc = d.html || "";
+      box.appendChild(f);
+    });
   }
 
   $("addform").addEventListener("submit", async function (ev) {
